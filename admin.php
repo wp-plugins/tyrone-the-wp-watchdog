@@ -41,8 +41,26 @@ class Tyrone_Admin_Page extends scbAdminPage {
 		) );
 		
 		
-		echo html( 'h3', 'Watch List' );
+		echo html( 'h3', 'Site Scanning' );
 		echo $this->form_table( array(
+			array(
+				'title' => 'Enable Cron Job?',
+				'type' => 'select',
+				'name' => 'tyrone_cron_setting',
+				'value' => array( 'Yes', 'No' ),
+			),
+			array(
+				'title' => 'Look for Changes?',
+				'type' => 'select',
+				'name' => 'tyrone_diff_setting',
+				'value' => array( 'Yes', 'No' ),
+			),
+			array(
+				'title' => 'Scan for Spam Words?',
+				'type' => 'select',
+				'name' => 'tyrone_juniper_setting',
+				'value' => array( 'Yes', 'No' ),
+			),
 			array(
 				'title' => 'Spam Words',
 				'type' => 'textarea',

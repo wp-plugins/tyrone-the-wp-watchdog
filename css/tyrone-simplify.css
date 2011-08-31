@@ -1,0 +1,4 @@
+#menu-media, #menu-links, #menu-pages, #menu-posts {
+display: none;
+visibility: hidden;
+}

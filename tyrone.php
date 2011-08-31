@@ -3,7 +3,7 @@
 Plugin Name: Tyrone the WP Watchdog
 Plugin URI: http://jacksonwhelan.com/plugins/tyrone-the-wp-watchdog/
 Description: Tyrone turns a WordPress installation into a website monitoring tool. Check the status of your sites, and keep tabs on which need upgrading, scan for spam and changes.
-Version: 0.1.1
+Version: 0.1.2
 Author: Jackson Whelan
 Author URI: http://jacksonwhelan.com/
 Donate link: http://jacksonwhelan.com/plugins/tyrone/

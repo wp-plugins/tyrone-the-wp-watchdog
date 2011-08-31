@@ -2,7 +2,7 @@
 Contributors: madjax
 Tags: monitor
 Tested up to: 3.2.1
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 Requires at least: 3.2.1
 
 Tyrone turns a WordPress installation into a website monitoring tool. Check the status of your sites, and keep tabs on which need upgrading, and scan for spam and changes.
@@ -12,6 +12,11 @@ Tyrone turns a WordPress installation into a website monitoring tool. Check the 
 Tyrone turns a WordPress installation into a website monitoring tool. Check the status of your sites, and keep tabs on which need upgrading, and scan for known spam terms, as well as changes to site content.
 
 == Changelog ==
+
+= 0.1.2 =
+* Row actions
+* Fix column sorting
+* Better email formatting
 
 = 0.1.1 =
 * Add the_content filter for sites single view on front end.

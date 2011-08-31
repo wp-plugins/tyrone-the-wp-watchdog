@@ -74,8 +74,20 @@ class Tyrone {
 		add_filter( 'manage_edit-site_sortable_columns', array( &$this, 'sites_sort' ) );
 		add_filter( 'the_content', array( &$this, 'content_filter' ) );
 		add_action( 'tyrone_cron', array( &$this, 'do_tyrone_cron' ) );
+		add_action( 'post_row_actions', array( &$this, 'row_actions' ), 10, 2 );
+		add_filter( 'request', array( &$this, 'sites_orderby' ) );
 	}
 	
+	
+	function row_actions( $actions, $post ) {
+		if ( 'site' != $post->post_type )
+			return $actions;
+	    
+	    unset( $actions['view'] );
+	    $actions['tyrone_refresh'] = '<a href=\''.admin_url('edit.php?post_type=site&page=tyrone-prowl&_wpnonce='.wp_create_nonce( 'tyrone' ).'&ids='.$post->ID).'\'>Refresh</a>';
+		return $actions;
+	}
+
 	// Tyrone cron function to loop through sites
 	function do_tyrone_cron() {
 	
@@ -652,8 +664,9 @@ EOF;
 		global $post;
 		?><tr>
 			<td>WordPress Version</td><td><?php echo $this->upgrade_link( get_post_meta($post->ID, '_tyrone_version', TRUE), get_post_meta($post->ID, '_tyrone_url', TRUE) ); ?></td>
-		</tr>
-		<tr>
+		</tr><?php
+		if( get_post_meta( $post->ID, '_tyrone_last_check', TRUE ) > 0 ) { 
+		?><tr>
 			<td colspan="2">
 				<h4><?php echo __( 'Most Recent Snapshot', 'tyrone' ); ?></h4>
 				<?php 				
@@ -674,6 +687,7 @@ EOF;
 				
 			</td>
 		</tr><?php
+		}
 	}
 		
 	function save_meta_data($post_id) {
@@ -724,7 +738,7 @@ EOF;
 	    'not_found_in_trash' => __('No sites found in Trash'), 
 	    'parent_item_colon' => '');
 	
-		register_post_type('site', 
+		register_post_type( 'site', 
 			array(
 				'labels' => $sitelabels,
 				'public' => true,
@@ -746,16 +760,18 @@ EOF;
 				'has_archive' => true,				
 			) 
 		);
+		
 	}
 	
 	function sites_columns( $columns ) {
 		$columns = array(
-			"title" => "Name",
-			"url" => "URL",
-			"tyrone_status" => "Status",
-			"tyrone_version" => "Version",
-			"tyrone_juniper" => "Spam Watch",
-			"last_check" => "Last Check"
+			'cb' => '<input type="checkbox" />',
+			'title' => 'Name',
+			'url' => 'URL',
+			'tyrone_status' => 'Status',
+			'tyrone_version' => 'Version',
+			'tyrone_juniper' => 'Spam Watch',
+			'last_check' => 'Last Check'
 		);
 		return $columns;
 	}
@@ -790,6 +806,26 @@ EOF;
 		return wp_parse_args($custom, $columns);
 	}
 	
+	function sites_orderby( $vars ) {
+		if ( isset( $vars['orderby'] ) && 'tyrone_status' == $vars['orderby'] ) {
+			$vars = array_merge( $vars, array(
+				'meta_key' => '_tyrone_status',
+				'orderby' => 'meta_value'
+			) );
+		} elseif ( isset( $vars['orderby'] ) && 'tyrone_version' == $vars['orderby'] ) {
+			$vars = array_merge( $vars, array(
+				'meta_key' => '_tyrone_version',
+				'orderby' => 'meta_value'
+			) );
+		} elseif ( isset( $vars['orderby'] ) && 'tyrone_juniper' == $vars['orderby'] ) {
+			$vars = array_merge( $vars, array(
+				'meta_key' => '_tyrone_juniper_result',
+				'orderby' => 'meta_value'
+			) );
+		}
+		return $vars;
+	}
+
 	// Prowling interface
 	// Thanks to Viper007Bond and Regenerate Thumbnails for this ajax wonder
 	function prowl_interface() {
